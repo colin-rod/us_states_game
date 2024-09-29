@@ -2,37 +2,42 @@ import turtle
 import pandas
 
 screen = turtle.Screen()
+screen.setup(width=725, height=491)
 screen.title("US States Game")
 image = "blank_states_img.gif"
 screen.addshape(image)
+screen.tracer(0)
 
-#TODO 1 get user input
 turtle.shape(image)
 score = 0
 game_is_on = True
 
+
 def get_input():
-    return screen.textinput(title=f"{score}/50States Guessed",prompt="What's another state's name?")
+    return screen.textinput(title=f"{score}/50States Guessed", prompt="What's another state's name?")
 
 
-#TODO 2 get data frame
+def show_on_map(state):
+    write_state = df[df.state.str.lower() == state]
+    turtle.penup()
+    turtle.goto(int(write_state.x), int(write_state.y))
+    turtle.write(f"{state.title()}", font=('Arial', 8, 'normal'))
+    turtle.goto(0, 0)
+
+
 df = pandas.read_csv("50_states.csv")
 all_states = df.state.str.lower().to_list()
 guessed_states = []
 
-#TODO 3 compare user input to data frame
 while game_is_on:
+    screen.update()
     user_answer = get_input().lower()
     for state in df.state:
-        if user_answer.lower() in all_states and user_answer not in guessed_states:
-            print("Yay")
-            get_input()
-            score +=1
-            guessed_states.append(user_answer)
-
-#TODO 4 if correct show on map
-#TODO 5 update title on input box
-#TODO 1 get user input
-
+        if user_answer.lower() in all_states and user_answer.lower() not in guessed_states:
+            score += 1
+            guessed_states.append(user_answer.lower())
+            show_on_map(user_answer)
+    if len(guessed_states) == 50:
+        game_is_on = False
 
 turtle.mainloop()
