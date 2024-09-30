@@ -33,9 +33,7 @@ while game_is_on:
     screen.update()
     user_answer = get_input().lower()
     if user_answer == "exit":
-        for states in all_states:
-            if states not in guessed_states:
-                output_states.append(states)
+        output_states = [state for state in all_states if state not in guessed_states]
         print(output_states)
         df = pandas.DataFrame(output_states)
         df.to_csv("Output.csv")
